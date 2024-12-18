@@ -23,7 +23,14 @@ export default function Navbar() {
 		setMobileOpen(!mobileOpen);
 	};
 
-	const navItems = ["Home", "Features", "Pricing", "Contact"];
+	const navItems = [
+		"Home",
+		"Features",
+		"Analytics",
+		"Explore",
+		"Products",
+		"Contact",
+	];
 
 	return (
 		<>

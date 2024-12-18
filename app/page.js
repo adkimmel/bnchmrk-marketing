@@ -4,7 +4,10 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Features from "./components/Features";
+import AnalyticsOverview from "./components/AnalyticsOverview";
 import EmployerFilterGrid from "./components/EmployerFilterGrid";
+import ProductsPricing from "./components/ProductsPricing";
+import Contact from "./components/Contact";
 
 export default function HomePage() {
 	return (
@@ -16,11 +19,17 @@ export default function HomePage() {
 			<div id="features">
 				<Features />
 			</div>
-			<div id="pricing">
+			<div id="analytics">
+				<AnalyticsOverview />
+			</div>
+			<div id="explore">
 				<EmployerFilterGrid />
 			</div>
+			<div id="products">
+				<ProductsPricing />
+			</div>
 			<div id="contact">
-				<p>Contact Us</p>
+				<Contact />
 			</div>
 		</>
 	);

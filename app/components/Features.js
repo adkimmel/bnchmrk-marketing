@@ -53,7 +53,7 @@ export default function Features() {
 		<Box
 			sx={{
 				padding: { xs: "3rem 1rem", md: "6rem 2rem" },
-				backgroundColor: "#f4f6f8",
+				backgroundColor: "#F4F6F8",
 			}}
 		>
 			<Container maxWidth="lg">
