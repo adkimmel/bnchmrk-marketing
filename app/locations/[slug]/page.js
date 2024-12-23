@@ -1,48 +1,36 @@
-// app/industries/[slug]/page.js
+// app/locations/[slug]/page.js
 
 import { Box, Typography, Grid, Container } from "@mui/material";
 import RequestSampleForm from "@/components/RequestSampleForm";
-import { employerCountApi, getNaicsApi } from "@/services/benchmarkingService";
+import { employerCountApi } from "@/services/benchmarkingService";
+import { slugToAbbr, statesAbbrLookup } from "@/utils/locationConfig";
 import PercentileChartWrapper from "@/components/PercentileChartWrapper";
 
-export default async function IndustryPage({ params }) {
+export default async function LocationPage({ params }) {
   const { slug } = await params;
+  const newSlug = slugToAbbr[slug];
 
   // Placeholder data
   const PLACEHOLDER_EMPLOYER_COUNT = { employer_count: 10535 };
-  const PLACEHOLDER_NAICS = [];
 
   let employerCount = PLACEHOLDER_EMPLOYER_COUNT;
-  let naics = PLACEHOLDER_NAICS;
 
   try {
-    const [
-      { ok: countOk, ...fetchedEmployerCount },
-      { ok: naicsOk, list: fetchedNaics },
-    ] = await Promise.all([
+    const [{ ok: countOk, ...fetchedEmployerCount }] = await Promise.all([
       employerCountApi({
-        industry: [slug],
-        state: [],
+        industry: [],
+        state: [newSlug],
         size: [],
         other: [],
       }),
-      getNaicsApi(),
     ]);
 
     if (countOk) employerCount = fetchedEmployerCount;
-    if (naicsOk) naics = fetchedNaics;
   } catch (error) {
     console.error("Error fetching data, using placeholders:", error);
   }
 
-  const formattedIndustryName = slug
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-
-  const filteredNaics = naics.filter(
-    (item) => item.industry.short_name === slug
-  );
+  const formattedLocationName = `State of ${statesAbbrLookup[newSlug].text}`;
 
   return (
     <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh", py: 6 }}>
@@ -59,7 +47,7 @@ export default async function IndustryPage({ params }) {
           }}
         >
           <Typography variant="h3" sx={{ fontWeight: 700, marginBottom: 3 }}>
-            {formattedIndustryName} Insights
+            {formattedLocationName} Insights
           </Typography>
           <Container maxWidth="md">
             <Typography
@@ -67,9 +55,9 @@ export default async function IndustryPage({ params }) {
               sx={{ fontSize: "1.125rem", lineHeight: 1.6 }}
             >
               Delve into the latest trends and metrics shaping the{" "}
-              <strong>{formattedIndustryName}</strong> industry. From
-              competitive employer contributions to coverage rates and premiums,
-              gain actionable insights to help your client or HR teams attract,
+              <strong>{formattedLocationName}</strong>. From competitive
+              employer contributions to coverage rates and premiums, gain
+              actionable insights to help your client or HR teams attract,
               retain, and reward top talent in an increasingly competitive
               landscape.
             </Typography>
@@ -90,21 +78,21 @@ export default async function IndustryPage({ params }) {
                 variant="h5"
                 sx={{ fontWeight: 700, marginBottom: 2 }}
               >
-                Industry Cohort Overview
+                Location Cohort Overview
               </Typography>
               <Typography variant="body1" color="text.secondary" paragraph>
                 Our database features{" "}
                 <strong>
                   {employerCount.employer_count.toLocaleString()} employers
                 </strong>{" "}
-                within the <strong>{formattedIndustryName}</strong> industry,
-                providing a robust foundation of insights for this sector. By
-                applying additional filters for location or organization size,
-                you can further refine and explore this valuable data.
+                within the <strong>{formattedLocationName}</strong>, providing a
+                robust foundation of insights for this geographic location. By
+                applying additional state filters, you can target custom, larger
+                regional areas.
               </Typography>
               <Typography variant="body1" color="text.secondary" paragraph>
                 Gain access to tailored benchmarking reports specific to this
-                industry or customized by location and size. Leverage these
+                location or customized by industry and size. Leverage these
                 insights to make smarter renewal recommendations for key
                 employee benefits, including:
               </Typography>
@@ -142,51 +130,7 @@ export default async function IndustryPage({ params }) {
               </Grid>
             </Box>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Box
-              sx={{
-                backgroundColor: "white",
-                padding: 4,
-                borderRadius: 2,
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{ fontWeight: 700, marginBottom: 2 }}
-              >
-                Industry Classification Overview
-              </Typography>
-              <Typography variant="body1" color="text.secondary" paragraph>
-                Bnchmrk leverages the North American Industry Classification
-                System (NAICS) for its benchmarking classifications. NAICS
-                offers a modern, standardized framework for grouping businesses,
-                ensuring precise and meaningful comparisons. Unlike the outdated
-                SIC system, which was last updated in 1987, NAICS reflects
-                today’s industries and is regularly revised to stay current with
-                economic changes.
-              </Typography>
-              <Typography variant="body1" color="text.secondary" paragraph>
-                The <strong>{formattedIndustryName}</strong> industry comprises
-                of{" "}
-                <strong>
-                  {filteredNaics.length.toLocaleString()} NAICS codes
-                </strong>
-                :
-              </Typography>
-              {filteredNaics.map((item) => (
-                <Typography
-                  variant="body2"
-                  key={item.value}
-                  color="text.secondary"
-                  sx={{ paddingLeft: 1 }}
-                >
-                  <strong>{item.display_name.split(" - ")[1]}</strong> (
-                  {item.display_name.split(" - ")[0]})
-                </Typography>
-              ))}
-            </Box>
-          </Grid>
+          <Grid item xs={12} md={6} />
         </Grid>
 
         <PercentileChartWrapper />
@@ -216,7 +160,7 @@ export default async function IndustryPage({ params }) {
             {/* Form Section */}
             <Grid item xs={12} md={6}>
               <RequestSampleForm
-                defaultMessage={`I'm interested in learning more about a benchmarking report for the ${formattedIndustryName} industry.`}
+                defaultMessage={`I'm interested in learning more about a benchmarking report for the state of ${formattedLocationName}.`}
               />
             </Grid>
 
@@ -236,7 +180,7 @@ export default async function IndustryPage({ params }) {
                 </Typography>
                 <Typography variant="body1" color="primary.contrastText">
                   Are you in the employee benefits industry and looking to gain
-                  a competitive edge in the {formattedIndustryName} sector?
+                  a competitive edge in the state of {formattedLocationName}?
                   Bnchmrk's proprietary database empowers your teams with
                   actionable insights to support clients and drive sales
                   success.

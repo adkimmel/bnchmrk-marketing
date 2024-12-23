@@ -4,6 +4,7 @@
 import { Grid } from "@mui/material";
 import Link from "next/link";
 import FilterCard from "@/components/FilterCard";
+import { statesAbbrLookup } from "@/utils/locationConfig";
 
 export default function ExploreLocation({ locations }) {
   const gridStyle = {
@@ -18,7 +19,7 @@ export default function ExploreLocation({ locations }) {
       {locations.map(({ value, display_name, region_name }) => (
         <Grid item xs={6} sm={4} md={2.4} key={value}>
           <Link
-            href={`/locations/${value}`}
+            href={`/locations/${statesAbbrLookup[value].slug}`}
             style={{ textDecoration: "none", width: "100%" }}
           >
             <FilterCard top={display_name} bottom={region_name} state />
