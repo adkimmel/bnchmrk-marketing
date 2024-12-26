@@ -105,3 +105,80 @@ export const slugToAbbr = {
   wyoming: "WY",
   district_of_columbia: "DC",
 };
+
+export const regionList = [
+  {
+    region_name: "Southeast Region",
+    states: [
+      "Alabama",
+      "Florida",
+      "Georgia",
+      "Kentucky",
+      "Mississippi",
+      "North Carolina",
+      "South Carolina",
+      "Tennessee",
+    ],
+  },
+  {
+    region_name: "Pacific Region",
+    states: ["Alaska", "California", "Hawaii", "Oregon", "Washington"],
+  },
+  {
+    region_name: "Mountain Region",
+    states: [
+      "Arizona",
+      "Colorado",
+      "Idaho",
+      "Montana",
+      "Nevada",
+      "New Mexico",
+      "Utah",
+      "Wyoming",
+    ],
+  },
+  {
+    region_name: "South Central Region",
+    states: ["Arkansas", "Louisiana", "Oklahoma", "Texas"],
+  },
+  {
+    region_name: "Northeast Region",
+    states: ["Connecticut", "New Jersey", "New York", "Pennsylvania"],
+  },
+  {
+    region_name: "Mid-Atlantic Region",
+    states: [
+      "Delaware",
+      "District of Columbia",
+      "Maryland",
+      "Virginia",
+      "West Virginia",
+    ],
+  },
+  {
+    region_name: "East North Central Region",
+    states: ["Illinois", "Indiana", "Michigan", "Ohio", "Wisconsin"],
+  },
+  {
+    region_name: "West North Central Region",
+    states: [
+      "Iowa",
+      "Kansas",
+      "Minnesota",
+      "Missouri",
+      "Nebraska",
+      "North Dakota",
+      "South Dakota",
+    ],
+  },
+  {
+    region_name: "New England Region",
+    states: [
+      "Maine",
+      "Massachusetts",
+      "New Hampshire",
+      "Rhode Island",
+      "Vermont",
+    ],
+  },
+];

@@ -2,6 +2,7 @@
 
 "use client";
 import { Grid, Typography } from "@mui/material";
+import { motion } from "framer-motion";
 
 const sections = [
   {
@@ -28,58 +29,64 @@ const sections = [
 
 export default function AnalyticsOverview() {
   return (
-    <Grid container>
+    <Grid container spacing={3}>
       {sections.map((section, index) => (
-        <Grid
-          item
-          xs={12}
-          key={index}
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            alignItems: { xs: "flex-start", sm: "center" },
-            backgroundColor: index % 2 === 0 ? "primary.main" : "primary.dark",
-            padding: { xs: 3, sm: 4 },
-            borderRadius: 4,
-            overflow: "hidden",
-            boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
-            transition: "transform 0.3s ease, box-shadow 0.3s ease",
-            "&:not(:last-of-type)": {
-              marginBottom: 4,
-            },
-            "&:hover": {
-              transform: "translateY(-6px)",
-              boxShadow: "0 12px 30px rgba(0, 0, 0, 0.15)",
-            },
-          }}
-        >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              color: "white",
-              width: { xs: "100%", sm: "40%" },
-              paddingRight: { sm: 10 },
-              marginBottom: { xs: 2, sm: 0 },
-              textAlign: { xs: "left", sm: "inherit" },
-            }}
+        <Grid item xs={12} key={index}>
+          <motion.div
+            initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
+            viewport={{ once: true }}
           >
-            {section.title}
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: "white",
-              width: { xs: "100%", sm: "60%" },
-              fontSize: "1.1rem",
-              paddingLeft: { sm: 2 },
-              fontWeight: 500,
-              lineHeight: 1.6,
-              textAlign: { xs: "left", sm: "inherit" },
-            }}
-          >
-            {section.description}
-          </Typography>
+            <Grid
+              container
+              sx={{
+                backgroundColor:
+                  index % 2 === 0 ? "primary.main" : "primary.dark",
+                padding: { xs: 3, sm: 4 },
+                borderRadius: "16px",
+                overflow: "hidden",
+                boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-6px)",
+                  boxShadow: "0 12px 30px rgba(0, 0, 0, 0.15)",
+                },
+                "&:not(:last-of-type)": {
+                  marginBottom: 3,
+                },
+              }}
+            >
+              <Grid item xs={12} sm={5} md={4}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    color: "white",
+                    marginBottom: { xs: 2, sm: 0 },
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {section.title}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={7} md={8}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "white",
+                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                    opacity: 0.9,
+                    lineHeight: 1.8,
+                    paddingLeft: { sm: 3 },
+                  }}
+                >
+                  {section.description}
+                </Typography>
+              </Grid>
+            </Grid>
+          </motion.div>
         </Grid>
       ))}
     </Grid>

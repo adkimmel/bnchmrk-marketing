@@ -3,7 +3,11 @@
 import { Box, Typography, Grid, Container } from "@mui/material";
 import RequestSampleForm from "@/components/RequestSampleForm";
 import { employerCountApi } from "@/services/benchmarkingService";
-import { slugToAbbr, statesAbbrLookup } from "@/utils/locationConfig";
+import {
+  slugToAbbr,
+  statesAbbrLookup,
+  regionList,
+} from "@/utils/locationConfig";
 import PercentileChartWrapper from "@/components/PercentileChartWrapper";
 
 export default async function LocationPage({ params }) {
@@ -31,6 +35,24 @@ export default async function LocationPage({ params }) {
   }
 
   const formattedLocationName = `State of ${statesAbbrLookup[newSlug].text}`;
+
+  function findRegionByState(regionList, state_name) {
+    // Normalize the input state_name to match the format in the states array
+    const normalizedStateName = state_name.replace(/_/g, " ").toLowerCase();
+
+    for (const region of regionList) {
+      for (const state of region.states) {
+        // Normalize each state name in the states array for comparison
+        const normalizedState = state.toLowerCase();
+        if (normalizedState === normalizedStateName) {
+          return region; // Return the entire region object
+        }
+      }
+    }
+    return null; // Return null if the state is not found in any region
+  }
+
+  const region = findRegionByState(regionList, slug);
 
   return (
     <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh", py: 6 }}>
@@ -130,7 +152,60 @@ export default async function LocationPage({ params }) {
               </Grid>
             </Box>
           </Grid>
-          <Grid item xs={12} md={6} />
+          <Grid item xs={12} md={6}>
+            <Box
+              sx={{
+                backgroundColor: "white",
+                padding: 4,
+                borderRadius: 2,
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 700, marginBottom: 2 }}
+              >
+                Regional Classification Overview
+              </Typography>
+              <Typography variant="body1" color="text.secondary" paragraph>
+                Bnchmrk offers the unique ability to generate benchmarking
+                reports by individual states while also supporting complex
+                regional analyses. You can leverage the regional classifications
+                provided by the US Census Bureau or create custom regions
+                tailored to your specific needs.
+              </Typography>
+              <Typography variant="body1" color="text.secondary" paragraph>
+                Below, you'll find a list of states that are standardly grouped
+                with your selected state as the{" "}
+                <strong>{region.region_name}</strong>, providing a starting
+                point for meaningful and precise comparisons. The region
+                comprises of{" "}
+                <strong>{region.states.length.toLocaleString()} states</strong>:
+              </Typography>
+              {region.states.map((item) => (
+                <Typography
+                  variant="body2"
+                  key={item.value}
+                  color="text.secondary"
+                  sx={{ paddingLeft: 1 }}
+                >
+                  <strong>{item}</strong>
+                </Typography>
+              ))}
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                paragraph
+                sx={{ paddingTop: 2 }}
+              >
+                You can customize the report to include any combination of
+                states, allowing for tailored insights that align with your
+                specific benchmarking needs. Alternatively, national
+                benchmarking is also possible by applying an industry or size
+                filter, enabling broader comparisons across a wide dataset.
+              </Typography>
+            </Box>
+          </Grid>
         </Grid>
 
         <PercentileChartWrapper />
@@ -160,7 +235,7 @@ export default async function LocationPage({ params }) {
             {/* Form Section */}
             <Grid item xs={12} md={6}>
               <RequestSampleForm
-                defaultMessage={`I'm interested in learning more about a benchmarking report for the state of ${formattedLocationName}.`}
+                defaultMessage={`I'm interested in learning more about a benchmarking report for the ${formattedLocationName}.`}
               />
             </Grid>
 

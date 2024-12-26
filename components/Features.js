@@ -1,7 +1,8 @@
 // components/Features.js
 
 "use client";
-import { Box, Grid, Typography, Container } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
+import { motion } from "framer-motion";
 import DataUsageIcon from "@mui/icons-material/DataUsage";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import BrandingWatermarkIcon from "@mui/icons-material/BrandingWatermark";
@@ -53,35 +54,42 @@ export default function Features() {
     <Grid container spacing={4}>
       {features.map((feature, index) => (
         <Grid item xs={12} sm={6} md={4} key={index}>
-          <Box
-            sx={{
-              textAlign: "center",
-              padding: "3rem",
-              backgroundColor: "white",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              borderRadius: "8px",
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-8px)",
-                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
-              },
-            }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            viewport={{ once: true }}
           >
             <Box
               sx={{
-                fontSize: "4rem",
-                color: "primary.main",
+                textAlign: "center",
+                padding: "3rem",
+                backgroundColor: "white",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                borderRadius: "8px",
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-8px)",
+                  boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
+                },
               }}
             >
-              {feature.icon}
+              <Box
+                sx={{
+                  fontSize: "4rem",
+                  color: "primary.main",
+                }}
+              >
+                {feature.icon}
+              </Box>
+              <Typography variant="h5" gutterBottom>
+                {feature.title}
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                {feature.description}
+              </Typography>
             </Box>
-            <Typography variant="h5" gutterBottom>
-              {feature.title}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {feature.description}
-            </Typography>
-          </Box>
+          </motion.div>
         </Grid>
       ))}
     </Grid>

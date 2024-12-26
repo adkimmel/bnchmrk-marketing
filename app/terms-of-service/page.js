@@ -1,4 +1,4 @@
-import { Paper, Typography, Divider, Box } from "@mui/material";
+import { Container, Paper, Typography, Box } from "@mui/material";
 
 export default function TermsOfService(props) {
   const doc = [
@@ -138,53 +138,59 @@ export default function TermsOfService(props) {
   ];
 
   return (
-    <Paper sx={{ p: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          py: 1,
-          paddingLeft: 2,
-        }}
-      >
-        <Box>
-          <Typography variant="h4">Bnchmrk Terms of Service</Typography>
-          <Typography variant="body2" color="text.secondary">
-            Last Updated: November 8, 2024
-          </Typography>
-        </Box>
-      </Box>
-      <Divider sx={{ my: 2 }} />
-      <Box sx={{ px: 4, backgroundColor: "#F7F7F7" }}>
-        {doc.map((section, index) => (
+    <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh", paddingY: 4 }}>
+      <Container maxWidth="lg">
+        <Paper sx={{ p: 3 }}>
           <Box
-            key={index}
             sx={{
-              display: "flex",
-              flexDirection: "row",
-              pt: 4,
-              pb: 4,
+              textAlign: "center",
+              paddingY: 4,
+              backgroundColor: "primary.dark",
+              color: "white",
+              borderRadius: 2,
             }}
           >
-            <Typography variant="h6" sx={{ pr: 2 }}>
-              {index + 1}.
+            <Typography variant="h3" sx={{ fontWeight: 700 }}>
+              Terms of Service
             </Typography>
-            <Box
-              sx={{
-                borderBottom: "1px solid #E0E0E0",
-                pb: 1,
-                width: "100%",
-              }}
-            >
-              <Typography variant="h6" paragraph>
-                {section.title}
+            <Container maxWidth="md">
+              <Typography variant="body1">
+                Last Updated: November 8, 2024
               </Typography>
-              {section.content}
-            </Box>
+            </Container>
           </Box>
-        ))}
-      </Box>
-    </Paper>
+
+          <Box sx={{ px: 4 }}>
+            {doc.map((section, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  pt: 4,
+                  pb: 4,
+                }}
+              >
+                <Typography variant="h6" sx={{ pr: 2 }}>
+                  {index + 1}.
+                </Typography>
+                <Box
+                  sx={{
+                    borderBottom: "1px solid #E0E0E0",
+                    pb: 1,
+                    width: "100%",
+                  }}
+                >
+                  <Typography variant="h6" paragraph>
+                    {section.title}
+                  </Typography>
+                  {section.content}
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 }

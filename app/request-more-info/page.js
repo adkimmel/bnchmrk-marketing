@@ -12,6 +12,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -39,12 +40,20 @@ const testimonials = [
   },
 ];
 
-export default function RequestSampleReport() {
+export default function RequestMoreInfo() {
+  const searchParams = useSearchParams();
+  const product = searchParams.get("product");
+  const defaultMessage = product
+    ? `I'm interested in learning more about ${
+        product.includes("license") ? "the unlimited " : ""
+      }${product.replace("_", " ")}.`
+    : "";
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     company: "",
-    message: "",
+    message: defaultMessage,
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
@@ -65,7 +74,7 @@ export default function RequestSampleReport() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          type: "Sample Report Request",
+          type: "Request For More Product Info",
         }),
       });
 
@@ -97,12 +106,12 @@ export default function RequestSampleReport() {
           }}
         >
           <Typography variant="h3" sx={{ fontWeight: 700, marginBottom: 2 }}>
-            Request a Sample Report
+            Request More Information
           </Typography>
           <Container maxWidth="md">
             <Typography variant="body1" sx={{ fontSize: "1.125rem" }}>
-              See how Bnchmrk’s powerful benchmarking capabilities can work for
-              you.
+              Learn more about how Bnchmrk can empower your organization with
+              actionable data and insights tailored to your unique needs.
             </Typography>
           </Container>
         </Box>
@@ -182,7 +191,7 @@ export default function RequestSampleReport() {
                 variant="h6"
                 sx={{ fontWeight: 700, color: "primary.main" }}
               >
-                Get Your Sample Report
+                Discover the Power of Tailored Insights
               </Typography>
               <TextField
                 name="name"

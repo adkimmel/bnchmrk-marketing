@@ -30,6 +30,7 @@ export default function CTA() {
         <Button
           variant="contained"
           color="secondary"
+          href="/request-more-info?product=individual_reports"
           sx={{
             padding: "0.75rem 1.5rem",
             marginRight: "1rem",
