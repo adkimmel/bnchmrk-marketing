@@ -1,14 +1,9 @@
-// components/HeroLite.js
-
 "use client";
 import { Box, Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { brand } from "@/styles/theme";
 
 export default function HeroLite({ topText, bottomText }) {
-  const highlightColor = brand.primary.hex;
-
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -26,6 +21,9 @@ export default function HeroLite({ topText, bottomText }) {
   return (
     <Box
       ref={ref}
+      component="section"
+      role="banner"
+      aria-label="Hero Lite section"
       sx={{
         position: "relative",
         display: "flex",
@@ -33,30 +31,32 @@ export default function HeroLite({ topText, bottomText }) {
         justifyContent: "center",
         minHeight: { xs: "60vh", md: "75vh" },
         overflow: "hidden",
-        backgroundColor: "primary.main",
+        backgroundColor: "primary.dark",
       }}
     >
+      {/* Background gradient */}
       <Box
         sx={{
           position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "100%",
-          height: "100%",
-          background: `radial-gradient(circle at center, ${highlightColor}15 0%, transparent 70%)`,
-          zIndex: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background:
+            "radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)",
+          pointerEvents: "none",
         }}
       />
 
       <Container
-        maxWidth="xl"
+        maxWidth="lg"
         sx={{
           textAlign: "center",
           position: "relative",
           zIndex: 1,
         }}
       >
+        {/* Top Text */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -68,39 +68,45 @@ export default function HeroLite({ topText, bottomText }) {
             sx={{
               fontSize: { xs: "2.5rem", sm: "3.5rem", md: "4rem" },
               fontWeight: 700,
-              marginBottom: 3,
-              color: "white",
+              background:
+                "linear-gradient(45deg, #fff 30%, rgba(255,255,255,0.8) 90%)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              marginBottom: "1.5rem",
             }}
           >
             {topText}
           </Typography>
         </motion.div>
-        <Container maxWidth="md">
-          <motion.div
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            variants={{
-              ...fadeUpVariants,
-              visible: {
-                ...fadeUpVariants.visible,
-                transition: { delay: 0.2, duration: 0.6, ease: "easeOut" },
-              },
+
+        {/* Bottom Text */}
+        <motion.div
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={{
+            ...fadeUpVariants,
+            visible: {
+              ...fadeUpVariants.visible,
+              transition: { delay: 0.2, duration: 0.6, ease: "easeOut" },
+            },
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              marginBottom: "2rem",
+              fontSize: { xs: "1.125rem", sm: "1.25rem", md: "1.5rem" },
+              fontWeight: 400,
+              lineHeight: 1.6,
+              color: "#FAF9F6",
+              maxWidth: "800px",
+              mx: "auto",
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{
-                marginBottom: "2rem",
-                fontSize: { xs: "1.125rem", sm: "1.25rem", md: "1.5rem" },
-                fontWeight: 400,
-                lineHeight: 1.6,
-                color: "#FAF9F6",
-              }}
-            >
-              {bottomText}
-            </Typography>
-          </motion.div>
-        </Container>
+            {bottomText}
+          </Typography>
+        </motion.div>
       </Container>
     </Box>
   );

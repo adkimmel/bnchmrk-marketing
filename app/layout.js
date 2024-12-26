@@ -1,54 +1,78 @@
 // app/layout.js
-
-"use client";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { Box, Typography } from "@mui/material";
-import { theme } from "../styles/theme";
-import Navbar from "@/components/Navbar";
+import LayoutWrapper from "@/components/LayoutWrapper";
 import "../styles/globals.css";
 
-export default function RootLayout({ children }) {
-  const currentYear = new Date().getFullYear();
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
+export const metadata = {
+  title: {
+    default: "Bnchmrk - Employee Benefits Benchmarking Platform",
+    template: "%s | Bnchmrk",
+  },
+  description:
+    "Access real-time employee benefits benchmarking data and analytics for informed decision-making.",
+  keywords: [
+    "benefits benchmarking",
+    "employee benefits",
+    "benefits analysis",
+    "HR analytics",
+    "compensation data",
+    "benefits data",
+  ],
+  openGraph: {
+    title: "Bnchmrk - Employee Benefits Benchmarking Platform",
+    description:
+      "Access real-time employee benefits benchmarking data and analytics.",
+    url: "https://bnchmrk.com",
+    siteName: "Bnchmrk",
+    type: "website",
+    locale: "en_US",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "your-google-verification-code",
+  },
+};
+
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Navbar />
-          <Box component="main" sx={{ minHeight: "calc(100vh - 150px)" }}>
-            {children}
-          </Box>
-          <Box
-            component="footer"
-            sx={{
-              textAlign: "center",
-              padding: "1rem",
-              backgroundColor: "#f4f6f8",
-              borderTop: "1px solid #e0e0e0",
-            }}
-          >
-            <Typography variant="body2" color="text.secondary">
-              © {currentYear} Bnchmrk LLC. All rights reserved.
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              <a
-                href="/privacy-policy"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                Privacy Policy
-              </a>{" "}
-              |{" "}
-              <a
-                href="/terms-of-service"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                Terms of Service
-              </a>
-            </Typography>
-          </Box>
-        </ThemeProvider>
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );

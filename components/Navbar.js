@@ -66,16 +66,14 @@ export default function Navbar() {
       <AppBar
         position="static"
         component="div"
-        sx={{ backgroundColor: "primary.main", color: "white" }}
+        sx={{
+          backgroundColor: pathname === "/" ? "primary.main" : "primary.dark",
+          color: "white",
+        }}
       >
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Link href="/" passHref legacyBehavior>
-            <a
-              aria-label="Return to homepage"
-              style={{ textDecoration: "none" }}
-            >
-              <Logo />
-            </a>
+          <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Logo />
           </Link>
 
           {/* Desktop Navigation */}
