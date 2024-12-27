@@ -1,9 +1,35 @@
-// app/industries/[slug]/page.js
+// app/explore-data/industries/[slug]/page.js
 
 import { Box, Typography, Grid, Container } from "@mui/material";
 import dynamic from "next/dynamic";
 import HeroLiteAlt from "@/components/HeroLiteAlt";
 import { employerCountApi, getNaicsApi } from "@/services/benchmarkingService";
+
+// Separation of data fetching logic
+async function getData(slug) {
+  try {
+    const [employerData, naicsData] = await Promise.all([
+      employerCountApi({
+        industry: [slug],
+        state: [],
+        size: [],
+        other: [],
+      }).catch(() => ({ ok: false, employer_count: 10535 })),
+      getNaicsApi().catch(() => ({ ok: false, list: [] })),
+    ]);
+
+    return {
+      employerCount: employerData.ok ? employerData : { employer_count: 10535 },
+      naics: naicsData.ok ? naicsData.list : [],
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return {
+      employerCount: { employer_count: 10535 },
+      naics: [],
+    };
+  }
+}
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -18,10 +44,10 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: `${industryName} Benefits Benchmarking Analysis | Bnchmrk`,
       description: `Get actionable ${industryName} industry benefits insights and trends. Make data-driven decisions with comprehensive benchmarking data.`,
-      url: `https://bnchmrk.com/industries/${slug}`,
+      url: `https://bnchmrk.com/explore-data/industries/${slug}`,
     },
     alternates: {
-      canonical: `https://bnchmrk.com/industries/${slug}`,
+      canonical: `https://bnchmrk.com/explore-data/industries/${slug}`,
     },
   };
 }
@@ -77,32 +103,7 @@ const PercentileChartWrapper = dynamic(
 export default async function IndustryPage({ params }) {
   const { slug } = await params;
 
-  // Placeholder data
-  const PLACEHOLDER_EMPLOYER_COUNT = { employer_count: 10535 };
-  const PLACEHOLDER_NAICS = [];
-
-  let employerCount = PLACEHOLDER_EMPLOYER_COUNT;
-  let naics = PLACEHOLDER_NAICS;
-
-  try {
-    const [
-      { ok: countOk, ...fetchedEmployerCount },
-      { ok: naicsOk, list: fetchedNaics },
-    ] = await Promise.all([
-      employerCountApi({
-        industry: [slug],
-        state: [],
-        size: [],
-        other: [],
-      }),
-      getNaicsApi(),
-    ]);
-
-    if (countOk) employerCount = fetchedEmployerCount;
-    if (naicsOk) naics = fetchedNaics;
-  } catch (error) {
-    console.error("Error fetching data, using placeholders:", error);
-  }
+  const { employerCount, naics } = await getData(slug);
 
   const formattedIndustryName = slug
     .split("_")
