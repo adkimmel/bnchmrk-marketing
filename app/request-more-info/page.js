@@ -1,5 +1,6 @@
-// app/request-sample-report/page.js
+// app/request-more-info/page.js
 
+import { Suspense } from "react";
 import { Box, Typography, Container, Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 
@@ -90,10 +91,12 @@ export default function RequestMoreInfo() {
 							<Testimonials />
 						</Grid>
 						<Grid item xs={12} md={6}>
-							<RequestForm
-								header="Request For More Product Info"
-								formText="Discover the Power of Tailored Insights"
-							/>
+							<Suspense fallback={<div>Loading form...</div>}>
+								<RequestForm
+									header="Request For More Product Info"
+									formText="Discover the Power of Tailored Insights"
+								/>
+							</Suspense>
 						</Grid>
 					</Grid>
 				</Container>
