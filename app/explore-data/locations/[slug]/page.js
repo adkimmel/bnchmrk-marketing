@@ -1,219 +1,165 @@
-// app/locations/[slug]/page.js
+// app/explore-data/locations/[slug]/page.js
 
-import { Box, Typography, Grid, Container } from "@mui/material";
-import RequestSampleForm from "@/components/RequestSampleForm";
+import { Container, Box, Typography, Grid } from "@mui/material";
+import dynamic from "next/dynamic";
+import HeroLiteAlt from "@/components/HeroLiteAlt";
+import LocationOverview from "@/components/LocationOverview";
 import { employerCountApi } from "@/services/benchmarkingService";
 import {
 	slugToAbbr,
 	statesAbbrLookup,
 	regionList,
 } from "@/utils/locationConfig";
-import PercentileChartWrapper from "@/components/PercentileChartWrapper";
+
+async function getData(slug) {
+	try {
+		const [employerData] = await Promise.all([
+			employerCountApi({
+				industry: [],
+				state: [slug],
+				size: [],
+				other: [],
+			}).catch(() => ({ ok: false, employer_count: 10535 })),
+		]);
+
+		return {
+			employerCount: employerData.ok ? employerData : { employer_count: 10535 },
+		};
+	} catch (error) {
+		console.error("Error fetching data:", error);
+		return {
+			employerCount: { employer_count: 10535 },
+		};
+	}
+}
+
+export async function generateMetadata({ params }) {
+	const { slug } = await params;
+	const abbrSlug = slugToAbbr[slug];
+	const locationState = statesAbbrLookup[abbrSlug].text;
+
+	return {
+		title: `${locationState} Benefits & Healthcare Cost Benchmarks | Bnchmrk`,
+		description: `Access regional employee benefits benchmarking data for ${locationState}. Compare local plan costs, designs, and employer contribution trends in the ${locationState} market.`,
+		openGraph: {
+			title: `${locationState} Healthcare & Benefits Cost Analysis | Bnchmrk`,
+			description: `Unlock ${locationState} market insights with local benefits benchmarking data. Understand regional trends and make strategic decisions with area-specific analytics.`,
+			url: `https://bnchmrk.com/explore-data/locations/${slug}`,
+		},
+		alternates: {
+			canonical: `https://bnchmrk.com/explore-data/locations/${slug}`,
+		},
+	};
+}
+
+function generateStructuredData(locationState, employerCount) {
+	return {
+		"@context": "https://schema.org",
+		"@type": "DataCatalog",
+		name: `${locationState} Regional Benefits & Healthcare Benchmarks`,
+		description: `Local employee benefits and healthcare cost analytics for employers in ${locationState}`,
+		provider: {
+			"@type": "Organization",
+			name: "Bnchmrk",
+		},
+		dataset: {
+			"@type": "Dataset",
+			name: `${locationState} Market Benefits Analysis`,
+			description: `Area-specific benefits data from ${employerCount.toLocaleString()} employers across ${locationState}, including plan designs, costs, and market trends`,
+			keywords: [
+				"healthcare costs",
+				locationState,
+				"benefits data",
+				"regional benchmarking",
+				"local market trends",
+				"employer contributions",
+				"plan design analysis",
+			],
+			variableMeasured: [
+				"Medical Plan Designs",
+				"Drug Formularies",
+				"Dental Coverage",
+				"Vision Benefits",
+				"Life & Disability",
+				"Employee Contributions",
+				"Stop Loss Coverage",
+				"Regional Cost Trends",
+			],
+		},
+	};
+}
+
+function findRegionByState(regionList, state_name) {
+	const normalizedStateName = state_name.replaceAll("-", " ").toLowerCase();
+
+	for (const region of regionList) {
+		for (const state of region.states) {
+			const normalizedState = state.toLowerCase();
+			if (normalizedState === normalizedStateName) {
+				// Create a new region object with the matching state filtered out
+				return {
+					...region,
+					states: region.states.filter(
+						(s) => s.toLowerCase() !== normalizedStateName
+					),
+				};
+			}
+		}
+	}
+	return null;
+}
+
+const RequestSampleForm = dynamic(
+	() => import("@/components/RequestSampleForm"),
+	{
+		ssr: true,
+	}
+);
+
+const PercentileChartWrapper = dynamic(
+	() => import("@/components/PercentileChartWrapper"),
+	{
+		ssr: true,
+	}
+);
 
 export default async function LocationPage({ params }) {
 	const { slug } = await params;
-	const newSlug = slugToAbbr[slug];
 
-	// Placeholder data
-	const PLACEHOLDER_EMPLOYER_COUNT = { employer_count: 10535 };
+	const abbrSlug = slugToAbbr[slug];
 
-	let employerCount = PLACEHOLDER_EMPLOYER_COUNT;
-
-	try {
-		const [{ ok: countOk, ...fetchedEmployerCount }] = await Promise.all([
-			employerCountApi({
-				industry: [],
-				state: [newSlug],
-				size: [],
-				other: [],
-			}),
-		]);
-
-		if (countOk) employerCount = fetchedEmployerCount;
-	} catch (error) {
-		console.error("Error fetching data, using placeholders:", error);
-	}
+	const { employerCount } = await getData(abbrSlug);
 
 	const formattedLocationName =
-		newSlug === "DC"
-			? statesAbbrLookup[newSlug].text
-			: `State of ${statesAbbrLookup[newSlug].text}`;
-
-	function findRegionByState(regionList, state_name) {
-		// Normalize the input state_name to match the format in the states array
-		const normalizedStateName = state_name.replace(/_/g, " ").toLowerCase();
-
-		for (const region of regionList) {
-			for (const state of region.states) {
-				// Normalize each state name in the states array for comparison
-				const normalizedState = state.toLowerCase();
-				if (normalizedState === normalizedStateName) {
-					return region; // Return the entire region object
-				}
-			}
-		}
-		return null; // Return null if the state is not found in any region
-	}
+		abbrSlug === "DC"
+			? statesAbbrLookup[abbrSlug].text
+			: `State of ${statesAbbrLookup[abbrSlug].text}`;
 
 	const region = findRegionByState(regionList, slug);
 
+	const structuredData = generateStructuredData(
+		formattedLocationName,
+		employerCount.employer_count
+	);
+
 	return (
-		<Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh", py: 6 }}>
+		<>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+			/>
+			<HeroLiteAlt
+				topText={`${formattedLocationName} Insights`}
+				bottomText={`Delve into the latest trends and metrics shaping the ${formattedLocationName}. From competitive employer contributions to coverage rates and premiums, gain actionable insights to help your client or HR teams attract, retain, and reward top talent in an increasingly competitive landscape.`}
+			/>
+			<LocationOverview
+				employerCount={employerCount}
+				formattedLocationName={formattedLocationName}
+				regionList={region}
+			/>
+
+			<PercentileChartWrapper />
 			<Container maxWidth="lg">
-				<Box
-					sx={{
-						textAlign: "center",
-						backgroundColor: "primary.main",
-						color: "white",
-						py: 8,
-						px: 3,
-						borderRadius: 2,
-						marginBottom: 4,
-					}}
-				>
-					<Typography variant="h3" sx={{ fontWeight: 700, marginBottom: 3 }}>
-						{formattedLocationName} Insights
-					</Typography>
-					<Container maxWidth="md">
-						<Typography
-							variant="body1"
-							sx={{ fontSize: "1.125rem", lineHeight: 1.6 }}
-						>
-							Delve into the latest trends and metrics shaping the{" "}
-							<strong>{formattedLocationName}</strong>. From competitive
-							employer contributions to coverage rates and premiums, gain
-							actionable insights to help your client or HR teams attract,
-							retain, and reward top talent in an increasingly competitive
-							landscape.
-						</Typography>
-					</Container>
-				</Box>
-
-				<Grid container spacing={4} sx={{ marginBottom: 6 }}>
-					<Grid item xs={12} md={6}>
-						<Box
-							sx={{
-								backgroundColor: "white",
-								padding: 4,
-								borderRadius: 2,
-								boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-							}}
-						>
-							<Typography
-								variant="h5"
-								sx={{ fontWeight: 700, marginBottom: 2 }}
-							>
-								Location Cohort Overview
-							</Typography>
-							<Typography variant="body1" color="text.secondary" paragraph>
-								Our database features{" "}
-								<strong>
-									{employerCount.employer_count.toLocaleString()} employers
-								</strong>{" "}
-								within the <strong>{formattedLocationName}</strong>, providing a
-								robust foundation of insights for this geographic location. By
-								applying additional state filters, you can target custom, larger
-								regional areas.
-							</Typography>
-							<Typography variant="body1" color="text.secondary" paragraph>
-								Gain access to tailored benchmarking reports specific to this
-								location or customized by industry and size. Leverage these
-								insights to make smarter renewal recommendations for key
-								employee benefits, including:
-							</Typography>
-							<Grid container sx={{ marginBottom: 2 }}>
-								<Grid item xs={5}>
-									{[
-										"🩺 Medical",
-										"💊 Prescription Drugs",
-										"🛡️ Stop Loss",
-										"🦷 Dental",
-										"👓 Vision",
-										"💼 Life Insurance",
-										"🕒 Short Term Disability",
-										"⏳ Long Term Disability",
-									].map((item, i) => (
-										<Typography variant="body1" color="text.secondary" key={i}>
-											<strong>{item}</strong>
-										</Typography>
-									))}
-								</Grid>
-								<Grid item xs={7}>
-									{[
-										"Plan Design Analysis",
-										"Gross Premium Rates",
-										"Employee Contributions",
-										"Strategic Planning",
-										"Plan Prevalence",
-										"Voluntary Coverage",
-									].map((item, i) => (
-										<Typography variant="body1" color="text.secondary" key={i}>
-											{item}
-										</Typography>
-									))}
-								</Grid>
-							</Grid>
-						</Box>
-					</Grid>
-					<Grid item xs={12} md={6}>
-						<Box
-							sx={{
-								backgroundColor: "white",
-								padding: 4,
-								borderRadius: 2,
-								boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-							}}
-						>
-							<Typography
-								variant="h5"
-								sx={{ fontWeight: 700, marginBottom: 2 }}
-							>
-								Regional Classification Overview
-							</Typography>
-							<Typography variant="body1" color="text.secondary" paragraph>
-								Bnchmrk offers the unique ability to generate benchmarking
-								reports by individual states while also supporting complex
-								regional analyses. You can leverage the regional classifications
-								provided by the US Census Bureau or create custom regions
-								tailored to your specific needs.
-							</Typography>
-							<Typography variant="body1" color="text.secondary" paragraph>
-								Below, you'll find a list of states that are standardly grouped
-								with your selected location as the{" "}
-								<strong>{region.region_name}</strong>, providing a starting
-								point for meaningful and precise comparisons. The region
-								comprises of{" "}
-								<strong>{region.states.length.toLocaleString()} states</strong>:
-							</Typography>
-							{region.states.map((item, i) => (
-								<Typography
-									variant="body2"
-									key={i}
-									color="text.secondary"
-									sx={{ paddingLeft: 1 }}
-								>
-									<strong>{item}</strong>
-								</Typography>
-							))}
-							<Typography
-								variant="body1"
-								color="text.secondary"
-								paragraph
-								sx={{ paddingTop: 2 }}
-							>
-								You can customize the report to include any combination of
-								states, allowing for tailored insights that align with your
-								specific benchmarking needs. Alternatively, national
-								benchmarking is also possible by applying an industry or size
-								filter, enabling broader comparisons across a wide dataset.
-							</Typography>
-						</Box>
-					</Grid>
-				</Grid>
-
-				<PercentileChartWrapper />
-
-				{/* Request Form */}
 				<Box
 					sx={{
 						marginTop: 8,
@@ -273,6 +219,6 @@ export default async function LocationPage({ params }) {
 					</Grid>
 				</Box>
 			</Container>
-		</Box>
+		</>
 	);
 }
