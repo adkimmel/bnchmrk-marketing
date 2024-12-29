@@ -1,5 +1,6 @@
 // app/request-sample-report/page.js
 
+import { Suspense } from "react";
 import { Box, Typography, Container, Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 
@@ -86,10 +87,12 @@ export default function RequestSampleReport() {
 							<Testimonials />
 						</Grid>
 						<Grid item xs={12} md={6}>
-							<RequestForm
-								header="Sample Report Request"
-								formText="Get Your Sample Report"
-							/>
+							<Suspense fallback={<div>Loading form...</div>}>
+								<RequestForm
+									header="Sample Report Request"
+									formText="Get Your Sample Report"
+								/>
+							</Suspense>
 						</Grid>
 					</Grid>
 				</Container>
