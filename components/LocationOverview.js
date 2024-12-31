@@ -120,7 +120,7 @@ export default function LocationOverview({
 										sx={{ color: "primary.main", fontWeight: 600 }}
 									>
 										{formattedLocationName}
-									</Box>{" "}
+									</Box>
 									, enabling precise geographical benchmarking for this area.
 									Combine this with industry or organization size filters to
 									create hyper-targeted comparisons tailored to your market.

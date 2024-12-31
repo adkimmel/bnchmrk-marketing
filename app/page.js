@@ -68,19 +68,20 @@ export default async function HomePage() {
 	let locationStates = PLACEHOLDER_STATES;
 
 	try {
-		const [counts, { ok: planOk, ...fetchedPlanCounts }, filters] =
-			await Promise.all([
-				employerCountApi({
-					industry: [],
-					state: [],
-					size: [],
-					other: [],
-				}),
-				getTotalPlans(),
-				employerFiltersApi(),
-			]);
-		console.log("counts=", counts);
-		const { ok: countOk, ...fetchedEmployerCount } = counts;
+		const [
+			{ ok: countOk, ...fetchedEmployerCount },
+			{ ok: planOk, ...fetchedPlanCounts },
+			filters,
+		] = await Promise.all([
+			employerCountApi({
+				industry: [],
+				state: [],
+				size: [],
+				other: [],
+			}),
+			getTotalPlans(),
+			employerFiltersApi(),
+		]);
 
 		if (countOk) employerCount = fetchedEmployerCount;
 		if (planOk) planCounts = fetchedPlanCounts;
