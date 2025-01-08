@@ -1,8 +1,10 @@
 // components/Hero.js
 "use client";
+import Link from "next/link";
 import { Box, Typography, Button, Container } from "@mui/material";
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
+import { trackEvent } from "@/utils/analytics";
 
 export default function Hero() {
 	const fadeUpVariants = {
@@ -20,6 +22,18 @@ export default function Hero() {
 			},
 		},
 		tap: { scale: 0.95 },
+	};
+
+	const handleSampleReportClick = () => {
+		trackEvent("button_click", "lead_generation", "request_sample_report_hero");
+	};
+
+	const handleBenchmarkingClick = () => {
+		trackEvent(
+			"button_click",
+			"navigation",
+			"employee_benefits_benchmarking_hero"
+		);
 	};
 
 	return (
@@ -121,22 +135,24 @@ export default function Hero() {
 							whileHover="hover"
 							whileTap="tap"
 						>
-							<Button
-								variant="contained"
-								color="secondary"
-								href="/request-sample-report"
-								endIcon={<ArrowRight size={20} />}
-								sx={{
-									padding: "0.75rem 2rem",
-									fontSize: "1.1rem",
-									borderRadius: "8px",
-									textTransform: "none",
-									fontWeight: 600,
-									boxShadow: "0 4px 14px 0 rgba(0,0,0,0.25)",
-								}}
-							>
-								Request a Sample Report
-							</Button>
+							<Link href="/request-sample-report" passHref>
+								<Button
+									variant="contained"
+									color="secondary"
+									onClick={handleSampleReportClick}
+									endIcon={<ArrowRight size={20} />}
+									sx={{
+										padding: "0.75rem 2rem",
+										fontSize: "1.1rem",
+										borderRadius: "8px",
+										textTransform: "none",
+										fontWeight: 600,
+										boxShadow: "0 4px 14px 0 rgba(0,0,0,0.25)",
+									}}
+								>
+									Request a Sample Report
+								</Button>
+							</Link>
 						</motion.div>
 
 						<motion.div
@@ -144,29 +160,31 @@ export default function Hero() {
 							whileHover="hover"
 							whileTap="tap"
 						>
-							<Button
-								variant="outlined"
-								color="inherit"
-								startIcon={<Play size={20} />}
-								href="/employee-benefits-benchmarking"
-								sx={{
-									padding: "0.75rem 2rem",
-									fontSize: "1.1rem",
-									borderRadius: "8px",
-									textTransform: "none",
-									fontWeight: 600,
-									borderColor: "rgba(255,255,255,0.5)",
-									color: "white",
-									backdropFilter: "blur(8px)",
-									backgroundColor: "rgba(255,255,255,0.1)",
-									"&:hover": {
-										borderColor: "white",
-										backgroundColor: "rgba(255,255,255,0.15)",
-									},
-								}}
-							>
-								Employee Benefits Benchmarking
-							</Button>
+							<Link href="/employee-benefits-benchmarking" passHref>
+								<Button
+									variant="outlined"
+									color="inherit"
+									startIcon={<Play size={20} />}
+									onClick={handleBenchmarkingClick}
+									sx={{
+										padding: "0.75rem 2rem",
+										fontSize: "1.1rem",
+										borderRadius: "8px",
+										textTransform: "none",
+										fontWeight: 600,
+										borderColor: "rgba(255,255,255,0.5)",
+										color: "white",
+										backdropFilter: "blur(8px)",
+										backgroundColor: "rgba(255,255,255,0.1)",
+										"&:hover": {
+											borderColor: "white",
+											backgroundColor: "rgba(255,255,255,0.15)",
+										},
+									}}
+								>
+									Employee Benefits Benchmarking
+								</Button>
+							</Link>
 						</motion.div>
 					</Box>
 				</motion.div>
