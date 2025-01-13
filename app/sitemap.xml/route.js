@@ -150,6 +150,16 @@ export function GET() {
 			priority: "0.6",
 			changefreq: "monthly",
 		},
+		{
+			loc: "https://www.bnchmrk.com/benchmarking",
+			priority: "0.6",
+			changefreq: "weekly",
+		},
+		{
+			loc: "https://www.bnchmrk.com/benchmarking/why-employee-benefits-benchmarking-important",
+			priority: "0.7",
+			changefreq: "weekly",
+		},
 	];
 
 	// Generate URLs for each state
