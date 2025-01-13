@@ -1,0 +1,76 @@
+import generateErrors from "./generateErrors.js";
+import { getPlanErrorSchema } from "./planError.js";
+import { getRatesErrorSchema } from "./ratesError.js";
+
+export function getMedicalErrorSchema(action) {
+  const fields = [
+    "type",
+    "in_ded_single",
+    "in_ded_family",
+    "in_max_single",
+    "in_max_family",
+    "in_coin",
+    "out_ded_single",
+    "out_ded_family",
+    "out_max_single",
+    "out_max_family",
+    "out_coin",
+    "rx_ded_single",
+    "rx_ded_family",
+    "rx_max_single",
+    "rx_max_family",
+    "rx_coin",
+    "pcp_copay",
+    "sp_copay",
+    "er_copay",
+    "uc_copay",
+    "lx_copay",
+    "ip_copay",
+    "op_copay",
+    "rx1_copay",
+    "rx2_copay",
+    "rx3_copay",
+    "rx4_copay",
+    "rx1_mail_copay",
+    "rx2_mail_copay",
+    "rx3_mail_copay",
+    "rx4_mail_copay",
+    "pcp_ded_apply",
+    "sp_ded_apply",
+    "er_ded_apply",
+    "uc_ded_apply",
+    "lx_ded_apply",
+    "ip_ded_apply",
+    "op_ded_apply",
+    "rx1_ded_apply",
+    "rx2_ded_apply",
+    "rx3_ded_apply",
+    "rx4_ded_apply",
+    "rx1_mail_ded_apply",
+    "rx2_mail_ded_apply",
+    "rx3_mail_ded_apply",
+    "rx4_mail_ded_apply",
+    "hra",
+    "hsa",
+    "fsa",
+    "age_rated",
+    "salary_banding",
+    "spousal_surcharge",
+    "tobacco_surcharge",
+    "t1_ercdhp",
+    "t2_ercdhp",
+    "t3_ercdhp",
+    "t4_ercdhp",
+  ];
+
+  const plan = generateErrors(fields);
+
+  return {
+    type: "object",
+    properties: {
+      ...getPlanErrorSchema(action),
+      ...getRatesErrorSchema(),
+      ...plan,
+    },
+  };
+}
