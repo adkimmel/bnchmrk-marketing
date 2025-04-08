@@ -1,4 +1,6 @@
 // app/layout.js
+
+import Script from "next/script";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "../styles/globals.css";
@@ -51,6 +53,16 @@ export default function RootLayout({ children }) {
 		<html lang="en">
 			<head>
 				<GoogleAnalytics GA_MEASUREMENT_ID={process.env.GA_MEASUREMENT_ID} />
+
+				<Script
+					id="vtag-ai-js"
+					strategy="afterInteractive"
+					async
+					src="https://r2.leadsy.ai/tag.js"
+					data-pid="SvhiNU66SDDimsLV"
+					data-version="062024"
+				/>
+
 				<link
 					rel="apple-touch-icon"
 					sizes="180x180"
